@@ -1,0 +1,1 @@
+module.exports = require('./crudFactory')('weather_forecasts', ['location','forecast_date','temperature_high','temperature_low','precipitation_chance','wind_speed','humidity','conditions','description','data']);
