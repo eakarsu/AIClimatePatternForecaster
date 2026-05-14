@@ -31,6 +31,20 @@ function Layout({ user, onLogout, children }) {
               {f.title}
             </div>
           ))}
+          <div
+            className={`sidebar-item ${location.pathname === '/notifications' ? 'active' : ''}`}
+            onClick={() => navigate('/notifications')}
+          >
+            <span className="icon">🔔</span>
+            Notifications
+          </div>
+          <div
+            className={`sidebar-item ${location.pathname === '/webhooks' ? 'active' : ''}`}
+            onClick={() => navigate('/webhooks')}
+          >
+            <span className="icon">🪝</span>
+            Webhooks
+          </div>
         </nav>
         <div className="sidebar-footer">
           <div className="user-info">

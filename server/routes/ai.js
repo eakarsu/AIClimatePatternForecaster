@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const pool = require('../db');
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const CLIMATE_SYSTEM_PROMPT =
+  'You are an expert climate scientist and meteorologist. Provide evidence-based climate analysis, forecasting, and risk assessment with actionable recommendations.';
 
 async function askAI(prompt, systemPrompt) {
   const response = await axios.post(
     OPENROUTER_URL,
     {
-      model: process.env.OPENROUTER_MODEL || 'anthropic/claude-haiku-4.5',
+      model: process.env.OPENROUTER_MODEL || 'anthropic/claude-3-5-sonnet-20241022',
       messages: [
-        { role: 'system', content: systemPrompt },
+        { role: 'system', content: systemPrompt || CLIMATE_SYSTEM_PROMPT },
         { role: 'user', content: prompt }
       ],
       max_tokens: 2000,
@@ -23,215 +26,259 @@ async function askAI(prompt, systemPrompt) {
         'HTTP-Referer': 'http://localhost:3000',
         'X-Title': 'AI Climate Pattern Forecaster',
       },
+      timeout: 60000,
     }
   );
   return response.data;
 }
 
-// Climate Pattern Analysis
+// Helper: save analysis to DB if table exists
+async function saveAnalysis(type, inputData, result, userId) {
+  try {
+    await pool.query(
+      `INSERT INTO climate_analyses (analysis_type, input_data_json, ai_result_json, user_id, created_at)
+       VALUES ($1, $2, $3, $4, NOW())`,
+      [type, JSON.stringify(inputData), JSON.stringify(result), userId || null]
+    );
+  } catch (_) {
+    // Non-fatal — table may not exist yet
+  }
+}
+
+// 1. Climate Pattern Analysis
 router.post('/analyze-pattern', async (req, res) => {
   try {
     const { patternData } = req.body;
+    if (!patternData) return res.status(400).json({ error: 'patternData is required' });
     const result = await askAI(
       `Analyze this climate pattern and provide insights, potential impacts, and recommendations:\n${JSON.stringify(patternData, null, 2)}`,
-      'You are an expert climate scientist. Provide detailed analysis of climate patterns with actionable insights. Format your response with clear sections: Overview, Key Findings, Impacts, and Recommendations.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('analyze-pattern', patternData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Weather Forecast AI
+// 2. Weather Forecast Analysis
 router.post('/forecast-analysis', async (req, res) => {
   try {
     const { forecastData } = req.body;
+    if (!forecastData) return res.status(400).json({ error: 'forecastData is required' });
     const result = await askAI(
       `Analyze this weather forecast data and provide detailed insights:\n${JSON.stringify(forecastData, null, 2)}`,
-      'You are a meteorologist AI assistant. Analyze weather data and provide detailed forecasting insights, potential severe weather risks, and practical advice for the public.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('forecast-analysis', forecastData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Temperature Prediction AI
+// 3. Temperature Analysis
 router.post('/temperature-analysis', async (req, res) => {
   try {
     const { tempData } = req.body;
+    if (!tempData) return res.status(400).json({ error: 'tempData is required' });
     const result = await askAI(
       `Analyze these temperature predictions and model performance:\n${JSON.stringify(tempData, null, 2)}`,
-      'You are a climate modeling expert. Evaluate temperature prediction accuracy, identify trends, and suggest model improvements. Discuss the implications of temperature anomalies.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('temperature-analysis', tempData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Precipitation Analysis AI
+// 4. Precipitation Analysis
 router.post('/precipitation-analysis', async (req, res) => {
   try {
     const { precipData } = req.body;
+    if (!precipData) return res.status(400).json({ error: 'precipData is required' });
     const result = await askAI(
       `Analyze this precipitation data and provide water resource insights:\n${JSON.stringify(precipData, null, 2)}`,
-      'You are a hydrologist and water resources expert. Analyze precipitation patterns, drought conditions, and water availability. Provide recommendations for water management.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('precipitation-analysis', precipData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Drought Assessment AI
+// 5. Drought Analysis
 router.post('/drought-analysis', async (req, res) => {
   try {
     const { droughtData } = req.body;
+    if (!droughtData) return res.status(400).json({ error: 'droughtData is required' });
     const result = await askAI(
       `Assess this drought situation and provide mitigation recommendations:\n${JSON.stringify(droughtData, null, 2)}`,
-      'You are a drought and water scarcity expert. Assess drought severity, predict trajectory, and recommend mitigation strategies for agriculture, water supply, and ecosystems.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('drought-analysis', droughtData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Flood Prediction AI
+// 6. Flood Analysis
 router.post('/flood-analysis', async (req, res) => {
   try {
     const { floodData } = req.body;
+    if (!floodData) return res.status(400).json({ error: 'floodData is required' });
     const result = await askAI(
       `Analyze this flood risk data and provide emergency recommendations:\n${JSON.stringify(floodData, null, 2)}`,
-      'You are a flood risk management expert. Analyze flood conditions, predict severity, and provide evacuation and mitigation recommendations.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('flood-analysis', floodData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Storm Tracking AI
+// 7. Storm Analysis
 router.post('/storm-analysis', async (req, res) => {
   try {
     const { stormData } = req.body;
+    if (!stormData) return res.status(400).json({ error: 'stormData is required' });
     const result = await askAI(
       `Analyze this storm data and provide tracking predictions:\n${JSON.stringify(stormData, null, 2)}`,
-      'You are a tropical meteorology expert. Analyze storm characteristics, predict track and intensity changes, and provide safety recommendations.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('storm-analysis', stormData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Sea Level Projection AI
+// 8. Sea Level Analysis
 router.post('/sea-level-analysis', async (req, res) => {
   try {
     const { seaLevelData } = req.body;
+    if (!seaLevelData) return res.status(400).json({ error: 'seaLevelData is required' });
     const result = await askAI(
       `Analyze these sea level projections and coastal impacts:\n${JSON.stringify(seaLevelData, null, 2)}`,
-      'You are a coastal climate scientist. Analyze sea level rise projections, assess coastal vulnerability, and recommend adaptation strategies.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('sea-level-analysis', seaLevelData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Air Quality AI
+// 9. Air Quality Analysis
 router.post('/air-quality-analysis', async (req, res) => {
   try {
     const { aqData } = req.body;
+    if (!aqData) return res.status(400).json({ error: 'aqData is required' });
     const result = await askAI(
       `Analyze this air quality data and provide health recommendations:\n${JSON.stringify(aqData, null, 2)}`,
-      'You are an air quality and public health expert. Analyze air quality indices, identify pollution sources, and provide health protection recommendations.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('air-quality-analysis', aqData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Carbon Emission AI
+// 10. Carbon Analysis
 router.post('/carbon-analysis', async (req, res) => {
   try {
     const { carbonData } = req.body;
+    if (!carbonData) return res.status(400).json({ error: 'carbonData is required' });
     const result = await askAI(
       `Analyze these carbon emission data and suggest reduction strategies:\n${JSON.stringify(carbonData, null, 2)}`,
-      'You are a carbon emissions and sustainability expert. Analyze emission sources, evaluate reduction targets, and recommend decarbonization pathways.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('carbon-analysis', carbonData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Crop Yield AI
+// 11. Crop Yield Analysis
 router.post('/crop-yield-analysis', async (req, res) => {
   try {
     const { cropData } = req.body;
+    if (!cropData) return res.status(400).json({ error: 'cropData is required' });
     const result = await askAI(
       `Analyze these crop yield predictions and climate impacts:\n${JSON.stringify(cropData, null, 2)}`,
-      'You are an agricultural climate expert. Analyze crop yield predictions, assess climate impacts on agriculture, and recommend adaptation strategies for farmers.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('crop-yield-analysis', cropData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Insurance Risk AI
+// 12. Insurance Risk Analysis
 router.post('/insurance-risk-analysis', async (req, res) => {
   try {
     const { insuranceData } = req.body;
+    if (!insuranceData) return res.status(400).json({ error: 'insuranceData is required' });
     const result = await askAI(
       `Analyze this climate-related insurance risk assessment:\n${JSON.stringify(insuranceData, null, 2)}`,
-      'You are a climate risk insurance analyst. Evaluate climate-related risks for insurance, assess premium adequacy, and recommend coverage strategies.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('insurance-risk-analysis', insuranceData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Real Estate Climate Risk AI
+// 13. Real Estate Analysis
 router.post('/real-estate-analysis', async (req, res) => {
   try {
     const { realEstateData } = req.body;
+    if (!realEstateData) return res.status(400).json({ error: 'realEstateData is required' });
     const result = await askAI(
       `Analyze the climate risk for this real estate property:\n${JSON.stringify(realEstateData, null, 2)}`,
-      'You are a real estate climate risk analyst. Evaluate property-level climate risks, project future impacts on property value, and recommend mitigation investments.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('real-estate-analysis', realEstateData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Historical Climate Analysis AI
+// 14. Historical Analysis
 router.post('/historical-analysis', async (req, res) => {
   try {
     const { historicalData } = req.body;
+    if (!historicalData) return res.status(400).json({ error: 'historicalData is required' });
     const result = await askAI(
       `Analyze this historical climate data and identify trends:\n${JSON.stringify(historicalData, null, 2)}`,
-      'You are a paleoclimatologist and climate historian. Analyze historical climate trends, contextualize current changes, and project future scenarios based on historical patterns.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('historical-analysis', historicalData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });
   }
 });
 
-// Climate Alert AI
+// 15. Climate Alert Analysis
 router.post('/alert-analysis', async (req, res) => {
   try {
     const { alertData } = req.body;
+    if (!alertData) return res.status(400).json({ error: 'alertData is required' });
     const result = await askAI(
       `Analyze this climate alert and provide emergency guidance:\n${JSON.stringify(alertData, null, 2)}`,
-      'You are an emergency management and climate alert specialist. Analyze the severity of climate alerts, assess risks, and provide clear safety instructions and preparedness guidance.'
+      CLIMATE_SYSTEM_PROMPT
     );
+    await saveAnalysis('alert-analysis', alertData, result, req.user?.id);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.response?.data?.error?.message || err.message });

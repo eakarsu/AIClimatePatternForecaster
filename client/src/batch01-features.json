@@ -1,0 +1,104 @@
+{
+  "project": "AIClimatePatternForecaster",
+  "marker": "// === Batch 01 Gaps & Frontend Mounts ===",
+  "features": [
+    {
+      "slug": "multi-scenario-modeling-agent-generating-optimisti",
+      "component": "MultiScenarioModelingAgentGeneratingOptimistiPage",
+      "label": "Multi-scenario modeling agent generating optimistic/baseline/pessimistic impact for assets and supply chain",
+      "endpoint": "/api/cf-multi-scenario-modeling-agent-generating-optimisti",
+      "kind": "cfs"
+    },
+    {
+      "slug": "adaptation-roadmap-generator-from-company-location",
+      "component": "AdaptationRoadmapGeneratorFromCompanyLocationPage",
+      "label": "Adaptation-roadmap generator from company location + industry inputs",
+      "endpoint": "/api/cf-adaptation-roadmap-generator-from-company-location",
+      "kind": "cfs"
+    },
+    {
+      "slug": "supply-chain-climate-risk-mapping-across-vendors-w",
+      "component": "SupplyChainClimateRiskMappingAcrossVendorsWPage",
+      "label": "Supply-chain climate-risk mapping across vendors with elevation/flood overlays",
+      "endpoint": "/api/cf-supply-chain-climate-risk-mapping-across-vendors-w",
+      "kind": "cfs"
+    },
+    {
+      "slug": "integrations-with-zillow-costar-real-estate-projec",
+      "component": "IntegrationsWithZillowCostarRealEstateProjecPage",
+      "label": "Integrations with Zillow/CoStar (real estate), Project44 (supply chain), and ClimateAI data feeds",
+      "endpoint": "/api/cf-integrations-with-zillow-costar-real-estate-projec",
+      "kind": "cfs"
+    },
+    {
+      "slug": "no-physics-informed-ml-downscaling-for-hyperlocal-",
+      "component": "NoPhysicsInformedMlDownscalingForHyperlocalPage",
+      "label": "No physics-informed ML downscaling for hyperlocal forecasts",
+      "endpoint": "/api/gap-no-physics-informed-ml-downscaling-for-hyperlocal-",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-ai-imagery-analysis-satellite-radar-integrated",
+      "component": "NoAiImageryAnalysisSatelliteRadarIntegratedPage",
+      "label": "No AI imagery analysis (satellite, radar) integrated",
+      "endpoint": "/api/gap-no-ai-imagery-analysis-satellite-radar-integrated",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-ai-scenario-planning-narrative-generator-for-bo",
+      "component": "NoAiScenarioPlanningNarrativeGeneratorForBoPage",
+      "label": "No AI scenario-planning narrative generator for boards",
+      "endpoint": "/api/gap-no-ai-scenario-planning-narrative-generator-for-bo",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-ai-sub-seasonal-to-seasonal-s2s-outlook-synthes",
+      "component": "NoAiSubSeasonalToSeasonalS2sOutlookSynthesPage",
+      "label": "No AI sub-seasonal-to-seasonal (S2S) outlook synthesis",
+      "endpoint": "/api/gap-no-ai-sub-seasonal-to-seasonal-s2s-outlook-synthes",
+      "kind": "gap"
+    },
+    {
+      "slug": "only-8-frontend-pages-despite-22-backend-routes-ui",
+      "component": "Only8FrontendPagesDespite22BackendRoutesUiPage",
+      "label": "Only 8 frontend pages despite 22 backend routes \u2014 UI gap",
+      "endpoint": "/api/gap-only-8-frontend-pages-despite-22-backend-routes-ui",
+      "kind": "gap"
+    },
+    {
+      "slug": "notification-routes-exist-but-no-sms-email-deliver",
+      "component": "NotificationRoutesExistButNoSmsEmailDeliverPage",
+      "label": "Notification routes exist but no SMS/email delivery channel",
+      "endpoint": "/api/gap-notification-routes-exist-but-no-sms-email-deliver",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-export-reporting-module-for-esg-cdp-filings",
+      "component": "NoExportReportingModuleForEsgCdpFilingsPage",
+      "label": "No export/reporting module for ESG/CDP filings",
+      "endpoint": "/api/gap-no-export-reporting-module-for-esg-cdp-filings",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-direct-downstream-risk-erm-api-client-only-gene",
+      "component": "NoDirectDownstreamRiskErmApiClientOnlyGenePage",
+      "label": "No direct downstream risk/ERM API client (only generic webhook)",
+      "endpoint": "/api/gap-no-direct-downstream-risk-erm-api-client-only-gene",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-mapping-gis-visualization-layer",
+      "component": "NoMappingGisVisualizationLayerPage",
+      "label": "No mapping/GIS visualization layer",
+      "endpoint": "/api/gap-no-mapping-gis-visualization-layer",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-real-time-noaa-ecmwf-feed-ingestion-pipeline",
+      "component": "NoRealTimeNoaaEcmwfFeedIngestionPipelinePage",
+      "label": "No real-time NOAA/ECMWF feed ingestion pipeline",
+      "endpoint": "/api/gap-no-real-time-noaa-ecmwf-feed-ingestion-pipeline",
+      "kind": "gap"
+    }
+  ]
+}
