@@ -32,6 +32,13 @@ function Layout({ user, onLogout, children }) {
             </div>
           ))}
           <div
+            className={`sidebar-item ${location.pathname === '/community-risk-matrix' ? 'active' : ''}`}
+            onClick={() => navigate('/community-risk-matrix')}
+          >
+            <span className="icon">🧭</span>
+            Community Risk Matrix
+          </div>
+          <div
             className={`sidebar-item ${location.pathname === '/notifications' ? 'active' : ''}`}
             onClick={() => navigate('/notifications')}
           >

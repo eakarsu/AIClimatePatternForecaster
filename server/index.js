@@ -54,6 +54,7 @@ app.use('/api/adaptation-roadmap', require('./routes/adaptationRoadmap')); // ap
 app.use('/api/supply-chain-climate', require('./routes/supplyChainClimateMap')); // apply pass 6 — audit custom suggestion
 
 app.use('/api/climate-integrations', require('./routes/climateDataIntegrations')); // apply pass 6 — audit custom suggestion
+app.use('/api/community-risk-matrix', require('./routes/communityRiskMatrix'));
 app.listen(PORT, () => {
   console.log(`Climate Forecaster API running on port ${PORT}`);
 });
