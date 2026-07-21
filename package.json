@@ -4,11 +4,13 @@
   "description": "AI Climate Pattern Forecaster - Professional climate analysis platform",
   "main": "server/index.js",
   "scripts": {
+    "start": "node server/index.js",
     "server": "nodemon server/index.js",
     "client": "cd client && npx vite --port 3000",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "seed": "node server/seed.js",
-    "setup-db": "node server/setupDb.js"
+    "setup-db": "node server/setupDb.js",
+    "test": "node --test server/tests/*.test.js"
   },
   "dependencies": {
     "express": "^4.18.2",

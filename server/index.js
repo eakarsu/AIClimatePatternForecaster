@@ -1,14 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+if(!process.env.JWT_SECRET||process.env.JWT_SECRET.length<32)throw new Error('JWT_SECRET must be at least 32 characters');
 
 const { aiRateLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
-app.use(express.json());
+app.use(cors({origin:(process.env.CORS_ORIGIN||'http://localhost:3000').split(','),credentials:true}));
+app.use(express.json({limit:'1mb'}));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -55,19 +56,7 @@ app.use('/api/supply-chain-climate', require('./routes/supplyChainClimateMap'));
 
 app.use('/api/climate-integrations', require('./routes/climateDataIntegrations')); // apply pass 6 — audit custom suggestion
 app.use('/api/community-risk-matrix', require('./routes/communityRiskMatrix'));
+app.use('/api/governed-forecasts', require('./routes/governedForecasts'));
 app.listen(PORT, () => {
   console.log(`Climate Forecaster API running on port ${PORT}`);
 });
-
-
-// === Batch 01 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-physics-informed-ml-downscaling-for-hyperlocal-', require('./routes/gap_no_physics_informed_ml_downscaling_for_hyperlocal_'));
-app.use('/api/gap-no-ai-imagery-analysis-satellite-radar-integrated', require('./routes/gap_no_ai_imagery_analysis_satellite_radar_integrated'));
-app.use('/api/gap-no-ai-scenario-planning-narrative-generator-for-bo', require('./routes/gap_no_ai_scenario_planning_narrative_generator_for_bo'));
-app.use('/api/gap-no-ai-sub-seasonal-to-seasonal-s2s-outlook-synthes', require('./routes/gap_no_ai_sub_seasonal_to_seasonal_s2s_outlook_synthes'));
-app.use('/api/gap-only-8-frontend-pages-despite-22-backend-routes-ui', require('./routes/gap_only_8_frontend_pages_despite_22_backend_routes_ui'));
-app.use('/api/gap-notification-routes-exist-but-no-sms-email-deliver', require('./routes/gap_notification_routes_exist_but_no_sms_email_deliver'));
-app.use('/api/gap-no-export-reporting-module-for-esg-cdp-filings', require('./routes/gap_no_export_reporting_module_for_esg_cdp_filings'));
-app.use('/api/gap-no-direct-downstream-risk-erm-api-client-only-gene', require('./routes/gap_no_direct_downstream_risk_erm_api_client_only_gene'));
-app.use('/api/gap-no-mapping-gis-visualization-layer', require('./routes/gap_no_mapping_gis_visualization_layer'));
-app.use('/api/gap-no-real-time-noaa-ecmwf-feed-ingestion-pipeline', require('./routes/gap_no_real_time_noaa_ecmwf_feed_ingestion_pipeline'));

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
+const authenticate = require('../middleware/auth');
 
 router.post('/login', async (req, res) => {
   try {
@@ -26,6 +27,7 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
+    if (typeof password !== 'string' || password.length < 12) return res.status(400).json({ error: 'Password must be at least 12 characters' });
     const hashed = await bcrypt.hash(password, 10);
     const result = await pool.query(
       'INSERT INTO users (email, password, name) VALUES ($1, $2, $3) RETURNING id, email, name',
@@ -40,6 +42,10 @@ router.post('/register', async (req, res) => {
     }
     res.status(500).json({ error: err.message });
   }
+});
+
+router.get('/me', authenticate, (req, res) => {
+  res.json({ user: req.user });
 });
 
 module.exports = router;

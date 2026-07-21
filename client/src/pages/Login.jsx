@@ -21,11 +21,6 @@ function Login({ onLogin }) {
     }
   };
 
-  const fillCredentials = () => {
-    setEmail('admin@climate.com');
-    setPassword('password123');
-  };
-
   return (
     <div className="login-container">
       <div className="login-box">
@@ -58,9 +53,6 @@ function Login({ onLogin }) {
           </div>
           <button type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-          <button type="button" className="btn btn-fill" onClick={fillCredentials}>
-            Fill Demo Credentials
           </button>
         </form>
       </div>
