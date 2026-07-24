@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const pool = require('../db');
+const auth = require('../middleware/auth');
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const CLIMATE_SYSTEM_PROMPT =
@@ -44,6 +45,8 @@ async function saveAnalysis(type, inputData, result, userId) {
     // Non-fatal — table may not exist yet
   }
 }
+
+router.use(auth);
 
 // 1. Climate Pattern Analysis
 router.post('/analyze-pattern', async (req, res) => {
